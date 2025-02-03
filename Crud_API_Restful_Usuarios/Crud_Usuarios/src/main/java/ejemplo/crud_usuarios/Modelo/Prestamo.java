@@ -6,6 +6,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "prestamo")
@@ -20,11 +21,28 @@ public class Prestamo {
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
 
-    @Column(name = "fecha_inicio", nullable = false)
-    private LocalDate fecha_inicio;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "ejemplar_id", nullable = false)
+    private Ejemplar ejemplar;
 
     @Column(name = "fecha_devolucion")
     private LocalDate fecha_devolucion;
+
+    @Column(name = "fecha_inicio", nullable = false)
+    private LocalDate fecha_inicio;
+
+
+
+    public Prestamo() {
+    }
+
+    public Prestamo(Usuario usuario, Ejemplar ejemplar) {
+        this.usuario = usuario;
+        this.ejemplar = ejemplar;
+        this.fecha_inicio = LocalDate.now();
+        this.fecha_devolucion = LocalDate.now().plusDays(15);
+    }
 
     public Integer getId() {
         return id;
@@ -58,4 +76,14 @@ public class Prestamo {
         this.fecha_devolucion = fechaDevolucion;
     }
 
+    @Override
+    public String toString() {
+        return "Prestamo{" +
+                "id=" + id +
+                ", usuario=" + usuario +
+                ", ejemplar=" + ejemplar +
+                ", fecha_devolucion=" + fecha_devolucion +
+                ", fecha_inicio=" + fecha_inicio +
+                '}';
+    }
 }
